@@ -1,2 +1,2 @@
-# vue_temp
-vue develop template
+# gry_cli
+using for create cli
