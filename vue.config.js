@@ -1,5 +1,7 @@
 const path = require('path');
 const CompressionPlugin = require('compression-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const webpack = require('webpack');
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
@@ -11,20 +13,13 @@ module.exports = {
   assetsDir: 'static',
   lintOnSave: true,
   productionSourceMap: false,
-  // 打包app时放开该配置
-  // publicPath: './',
-  // configureWebpack: config => {
-  //     // 生产环境取消 console.log
-  //         if (process.env.NODE_ENV === 'production') {
-  //           config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
-  //         }
-  // },
+
   pages: {
     index: {
       entry: 'src/main.js',
       template: 'public/index.html',
       filename: 'index.html',
-      title: '西安高新区改革系统平台',
+      title: '渭南高新区雪亮工程大数据平台',
     },
   },
   devServer: {
@@ -35,31 +30,24 @@ module.exports = {
       errors: true,
     },
     proxy: {
-      '/Zapi': {
-        // target: 'http://192.168.3.15:8902/jeecg-boot',
-        target: 'http://192.168.0.70:8902/reform',
-        target: 'http://121.41.97.93:9105/reform',
+      '/api1': {
+        target: 'http://192.168.3.15:9101/jeecg-boot',
+
         changeOrigin: true,
         pathRewrite: {
-          '^/Zapi': '/',
-        },
+          '^/api1': '/'
+        }
       },
     },
     //   before: require('./mock/mock-server.js')
   },
-  // chainWebpack: config => {
-  //   config
-  //     .plugin('html')
-  //     .tag(args => {
-  //       args[0].title ='西安高新区政策体系大数据'
-  //     })
-  // },
+
   css: {
     loaderOptions: {
       less: {
         modifyVars: {
           /* less 变量覆盖，用于自定义 ant design 主题 */
-          'primary-color': '#226ebc',
+          'primary-color': '#285c95',
           'link-color': '#1890FF',
           'border-radius-base': '4px',
           'ant-btn-primary': '#2073cf',
@@ -77,17 +65,24 @@ module.exports = {
       },
     },
   },
-  // configureWebpack: {
-  //     name: '大数据',
-  //     resolve: {
-  //       alias: {
-  //         '@': resolve('src')
-  //       }
-  //     }
-  //   }
+  configureWebpack: {
+    plugins: [
+      new webpack.DefinePlugin({ CESIUM_BASE_URL: JSON.stringify('./') }),
+      new CopyWebpackPlugin([ { from: path.resolve(__dirname,'node_modules/cesium/Source', '../Build/Cesium/Workers'), to: 'Workers' } ]),
+      new CopyWebpackPlugin([ { from: path.resolve(__dirname,'node_modules/cesium/Source', 'Assets'), to: 'Assets' } ]),
+      new CopyWebpackPlugin([ { from: path.resolve(__dirname,'node_modules/cesium/Source', 'Widgets'), to: 'Widgets' } ]),
+      new CopyWebpackPlugin([ { from: path.resolve(__dirname,'node_modules/cesium/Source', 'ThirdParty/Workers'), to: 'ThirdParty/Workers' } ]),
+    ],
+  },
   chainWebpack: (config) => {
-    config.resolve.alias.set('@', resolve('src'))
+    config.resolve.alias.set('@', resolve('src'));
 
+    config.plugin('provide').use(webpack.ProvidePlugin, [
+      {
+        echarts: 'echarts',
+        // CESIUM_BASE_URL: JSON.stringify('')
+      }
+    ])
     if (process.env.NODE_ENV === 'production') {
       config.plugin('compressionPlugin').use(
         new CompressionPlugin({
@@ -95,7 +90,7 @@ module.exports = {
           threshold: 10240, // 对超过10k的数据压缩
           deleteOriginalAssets: false, // 不删除源文件
         })
-      )
+      );
     }
   },
 };
