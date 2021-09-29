@@ -1,18 +1,16 @@
 import Vue from 'vue'
 import App from './App.vue'
-
+import router from './router'
+import Antd from 'ant-design-vue'
+import {VueAxios} from "@/utils/request"
+import 'ant-design-vue/dist/antd.css'
+import './assets/style/main.less'
+import './assets/style/common.css'
 Vue.config.productionTip = false
-// Vue.use(VueAxios, router)
-// Vue.use(Antd)
+Vue.use(VueAxios, router)
+Vue.use(Antd)
 
 
-// import HighchartsVue from 'highcharts-vue'
-// import highcharts from 'highcharts'
-// import highcharts3d from 'highcharts/highcharts-3d'
-// highcharts3d(highcharts)
-// Vue.use(HighchartsVue);
-
-// Vue.prototype.$ehcarts = require('echarts')
  function setRem () {
    const scale = document.documentElement.clientWidth / 100
    document.documentElement.style.fontSize = scale + 'px'
@@ -61,7 +59,7 @@ Stores.prototype.install = function(Vue) {
 }
 Object.defineProperties(Stores.prototype, $store)
 
-let  token = window.sessionStorage.getItem('token') 
+let  token = window.sessionStorage.getItem('token')
 let  userInfo = window.sessionStorage.getItem('userInfo')
 userInfo = userInfo ? JSON.parse(userInfo) : {}
 
@@ -108,6 +106,7 @@ Vue.use(stores)
 }
 
 new Vue({
-
+  router,
+  store: stores,
   render: h => h(App),
 }).$mount('#app')

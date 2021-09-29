@@ -1,6 +1,5 @@
 const path = require('path');
 const CompressionPlugin = require('compression-webpack-plugin');
-const webpack = require('webpack');
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
@@ -25,7 +24,7 @@ module.exports = {
       entry: 'src/main.js',
       template: 'public/index.html',
       filename: 'index.html',
-      title: '渭南高新区雪亮工程大数据平台',
+      title: '西安高新区改革系统平台',
     },
   },
   devServer: {
@@ -36,14 +35,14 @@ module.exports = {
       errors: true,
     },
     proxy: {
-      '/api1': {
-        target: 'http://192.168.3.15:9101/jeecg-boot',
-
-        // target: 'http://192.168.0.81:8080/jeecg-boot',
+      '/Zapi': {
+        // target: 'http://192.168.3.15:8902/jeecg-boot',
+        target: 'http://192.168.0.70:8902/reform',
+        target: 'http://121.41.97.93:9105/reform',
         changeOrigin: true,
         pathRewrite: {
-          '^/api1': '/'
-        }
+          '^/Zapi': '/',
+        },
       },
     },
     //   before: require('./mock/mock-server.js')
@@ -60,7 +59,7 @@ module.exports = {
       less: {
         modifyVars: {
           /* less 变量覆盖，用于自定义 ant design 主题 */
-          'primary-color': '#285c95',
+          'primary-color': '#226ebc',
           'link-color': '#1890FF',
           'border-radius-base': '4px',
           'ant-btn-primary': '#2073cf',
@@ -79,20 +78,16 @@ module.exports = {
     },
   },
   // configureWebpack: {
-  //   plugins: [
-  //     new webpack.ProvidePlugin({
-  //       echarts: 'echarts',
-  //     }),
-  //   ],
-  // },
+  //     name: '大数据',
+  //     resolve: {
+  //       alias: {
+  //         '@': resolve('src')
+  //       }
+  //     }
+  //   }
   chainWebpack: (config) => {
-    config.resolve.alias.set('@', resolve('src'));
+    config.resolve.alias.set('@', resolve('src'))
 
-    config.plugin('provide').use(webpack.ProvidePlugin, [
-      {
-        echarts: 'echarts'
-      }
-    ])
     if (process.env.NODE_ENV === 'production') {
       config.plugin('compressionPlugin').use(
         new CompressionPlugin({
@@ -100,7 +95,7 @@ module.exports = {
           threshold: 10240, // 对超过10k的数据压缩
           deleteOriginalAssets: false, // 不删除源文件
         })
-      );
+      )
     }
   },
 };

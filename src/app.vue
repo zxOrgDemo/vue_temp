@@ -1,15 +1,18 @@
 <template>
+<a-config-provider :locale="locale">
   <div id="app">
-       {{msg}}
+        <router-view v-if="showRoterView" ></router-view>
   </div>
+</a-config-provider>
 </template>
 
 <script>
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 export default {
   name: 'App',
   data() {
     return {
-     msg: 'hello',
+      locale: zhCN,
       showRoterView: true
     }
   },
@@ -33,15 +36,14 @@ export default {
 }
 </script>
 
-<style lang='less'>
+<style>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
-  /* background: #18295a; */
-  /* background: url(~@/assets/img/conbg.png) no-repeat; */
-	/* background-size: 100% 100%; */
+  /* background: #f5f9fb; */
 }
 </style>
 
